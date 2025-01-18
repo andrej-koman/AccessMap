@@ -1,5 +1,4 @@
 import MapComponent from "~/components/map";
-import MapComponent from "~/components/map";
 
 export default function HomePage() {
   const mapsApiKey = process.env.GOOGLE_MAPS_API_KEY ?? "";
