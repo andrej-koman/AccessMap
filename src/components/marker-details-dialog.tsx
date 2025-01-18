@@ -12,7 +12,6 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-import { type Marker } from "~/types/schema";
 import { useState } from "react";
 import {
   Select,

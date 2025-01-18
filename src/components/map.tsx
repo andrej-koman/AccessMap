@@ -7,11 +7,20 @@ import {
   AdvancedMarker,
   AdvancedMarkerAnchorPoint,
 } from "@vis.gl/react-google-maps";
-import ElevatorIcon from "~/icons/elevator";
 import MarkerDialog from "./marker-dialog";
 import { useState } from "react";
 import { type Marker } from "~/types/schema";
 import MarkerDetailsDialog from "./marker-details-dialog";
+import {
+  ArrowUpDownIcon,
+  DoorOpenIcon,
+  EarIcon,
+  EarOffIcon,
+  EyeIcon,
+  FenceIcon,
+  RockingChairIcon,
+  TriangleRightIcon,
+} from "lucide-react";
 
 export default function MapComponent({ apiKey }: { apiKey: string }) {
   // Use states
@@ -36,12 +45,10 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
 
     // Create a new marker object
     const newMarker: Marker = {
-      id: 1,
       lat: lat,
       lng: lng,
       name: "New Marker",
-      disabilityId: 1,
-      markerType: "elevator",
+      markerType: "lowNoiseZone",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -52,22 +59,59 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
 
   const renderMarkerImage = (markerType: string) => {
     switch (markerType) {
-      case "danger":
-        return "/danger.png";
-      case "safe":
-        return "/safe.png";
+      case "ramp":
+        return (
+          <div className="rounded-full border-2 border-red-500 bg-white p-1">
+            <TriangleRightIcon color="red" />
+          </div>
+        );
+      case "accessibleEntrance":
+        return (
+          <div className="rounded-full border-2 border-blue-500 bg-white p-1">
+            <DoorOpenIcon color="blue" />
+          </div>
+        );
       case "elevator":
         return (
           <div className="rounded-full border-2 border-green-500 bg-white p-1">
-            <ElevatorIcon color="green" />
+            <ArrowUpDownIcon color="green" />
+          </div>
+        );
+      case "audioSignal":
+        return (
+          <div className="rounded-full border-2 border-purple-900 bg-white p-1">
+            <EarIcon color="purple" />
+          </div>
+        );
+      case "visualSignal":
+        return (
+          <div className="rounded-full border-2 border-yellow-500 bg-white p-1">
+            <EyeIcon color="#BA8E23" />
+          </div>
+        );
+      case "bench":
+        return (
+          <div className="rounded-full border-2 border-black bg-white p-1">
+            <RockingChairIcon color="black" />
+          </div>
+        );
+      case "handRail":
+        return (
+          <div className="rounded-full border-2 border-gray-500 bg-white p-1">
+            <FenceIcon color="gray" />
+          </div>
+        );
+      case "lowNoiseZone":
+        return (
+          <div
+            className="rounded-full border-2 bg-white p-1"
+            style={{ borderColor: "brown" }}
+          >
+            <EarOffIcon color="brown" />
           </div>
         );
       default:
-        return (
-          <div className="rounded-full border-2 border-green-500 bg-white p-1">
-            <ElevatorIcon color="green" />
-          </div>
-        );
+        return "missing";
     }
   };
   return (
@@ -97,25 +141,6 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
                 );
                 if (button) {
                   (button as HTMLButtonElement).click();
-                }
-
-                // Change the name field in the dialog
-                const nameInput = document.querySelector(
-                  "#marker-details-name",
-                );
-                if (nameInput) {
-                  console.log("Setting name", marker.name);
-                  (nameInput as HTMLInputElement).value = marker.name;
-                }
-
-                // Change the markerType field in the dialog
-                const markerTypeSelect = document.querySelector(
-                  "#marker-details-markerType",
-                );
-                if (markerTypeSelect) {
-                  console.log("Setting markerType", marker.markerType);
-                  (markerTypeSelect as HTMLSelectElement).value =
-                    marker.markerType;
                 }
               }}
               anchorPoint={AdvancedMarkerAnchorPoint.CENTER}
