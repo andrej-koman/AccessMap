@@ -5,13 +5,16 @@ import {
   Map,
   type MapMouseEvent,
   AdvancedMarker,
+  AdvancedMarkerAnchorPoint,
 } from "@vis.gl/react-google-maps";
 import ElevatorIcon from "~/icons/elevator";
 import MarkerDialog from "./marker-dialog";
 import { useState } from "react";
 import { type Marker } from "~/types/schema";
+import MarkerDetailsDialog from "./marker-details-dialog";
 
 export default function MapComponent({ apiKey }: { apiKey: string }) {
+  // Use states
   const [markers, setMarkers] = useState<Marker[]>([]);
 
   const handleRightClick = (e: MapMouseEvent) => {
@@ -38,7 +41,7 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
       lng: lng,
       name: "New Marker",
       disabilityId: 1,
-      markerType: "",
+      markerType: "elevator",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -53,24 +56,33 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
         return "/danger.png";
       case "safe":
         return "/safe.png";
+      case "elevator":
+        return (
+          <div className="rounded-full border-2 border-green-500 bg-white p-1">
+            <ElevatorIcon color="green" />
+          </div>
+        );
       default:
-        return <ElevatorIcon />;
+        return (
+          <div className="rounded-full border-2 border-green-500 bg-white p-1">
+            <ElevatorIcon color="green" />
+          </div>
+        );
     }
   };
   return (
     <>
       <MarkerDialog />
+      <MarkerDetailsDialog />
       <APIProvider apiKey={apiKey}>
         <Map
           style={{ width: "100vw", height: "100vh", zIndex: 0 }}
           defaultCenter={{ lat: 46.55736240967441, lng: 15.646026756007503 }}
           defaultZoom={15}
           disableDefaultUI={true}
-          colorScheme="dark"
           reuseMaps={true}
           onContextmenu={handleRightClick}
-          mapId={"1d3a5ab35e55c11"}
-          mapTypeId={"roadmap"}
+          mapId={"Maribor-map"}
         >
           {markers.map((marker) => (
             <AdvancedMarker
@@ -79,6 +91,34 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
                 lat: marker.lat,
                 lng: marker.lng,
               }}
+              onClick={() => {
+                const button = document.querySelector(
+                  ".open-marker-details-dialog",
+                );
+                if (button) {
+                  (button as HTMLButtonElement).click();
+                }
+
+                // Change the name field in the dialog
+                const nameInput = document.querySelector(
+                  "#marker-details-name",
+                );
+                if (nameInput) {
+                  console.log("Setting name", marker.name);
+                  (nameInput as HTMLInputElement).value = marker.name;
+                }
+
+                // Change the markerType field in the dialog
+                const markerTypeSelect = document.querySelector(
+                  "#marker-details-markerType",
+                );
+                if (markerTypeSelect) {
+                  console.log("Setting markerType", marker.markerType);
+                  (markerTypeSelect as HTMLSelectElement).value =
+                    marker.markerType;
+                }
+              }}
+              anchorPoint={AdvancedMarkerAnchorPoint.CENTER}
             >
               {renderMarkerImage(marker.markerType)}
             </AdvancedMarker>
