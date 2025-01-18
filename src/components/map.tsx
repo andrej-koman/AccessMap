@@ -10,7 +10,7 @@ import { useState } from "react";
 import { type Marker } from "~/types/schema";
 
 export default function MapComponent({ apiKey }: { apiKey: string }) {
-  const [marker, setMarkers] = useState<Marker>();
+  const [markers, setMarkers] = useState<Marker[]>([]);
 
   const handleRightClick = (e: MapMouseEvent) => {
     console.log("Right click", e);
@@ -31,13 +31,38 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
       lng: lng,
       name: "New Marker",
       disabilityId: 1,
-      markerType: "default",
+      markerType: "danger",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
     // Set the marker state
-    setMarkers(newMarker);
+    setMarkers([...markers, newMarker]);
+  };
+
+  const renderPin = (markerType: string) => {
+    switch (markerType) {
+      case "default":
+        return <Pin />;
+      case "accessible":
+        return (
+          <Pin
+            background={"#0f9d58"}
+            borderColor={"#006425"}
+            glyphColor={"#60d98f"}
+          />
+        );
+      case "danger":
+        return (
+          <Pin
+            background={"#db4437"}
+            borderColor={"#a52714"}
+            glyphColor={"#ff8a65"}
+          />
+        );
+      default:
+        return <Pin />;
+    }
   };
 
   return (
@@ -58,7 +83,7 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
           },
         ]}
       >
-        {marker && (
+        {markers.map((marker) => (
           <AdvancedMarker
             key={marker.id}
             position={{
@@ -66,13 +91,9 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
               lng: marker.lng,
             }}
           >
-            <Pin
-              background={"#0f9d58"}
-              borderColor={"#006425"}
-              glyphColor={"#60d98f"}
-            />
+            {renderPin(marker.markerType)}
           </AdvancedMarker>
-        )}
+        ))}
       </Map>
     </APIProvider>
   );
