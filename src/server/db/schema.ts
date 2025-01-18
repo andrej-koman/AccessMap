@@ -13,9 +13,8 @@ export const user = pgTable("user", {
 export const marker = pgTable("marker", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 256 }),
-  lat: integer("lat"),
-  lng: integer("lng"),
-  disabilityId: integer("disability_id").notNull(),
+  lat: varchar("lat", { length: 256 }),
+  lng: varchar("lng", { length: 256 }),
   markerType: varchar("marker_type", { length: 256 }), // This will be an enum
 });
 

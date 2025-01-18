@@ -7,8 +7,6 @@ export type User = {
   disabilityId: number;
   roleId: number;
   expirationDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
 };
 
 /**
@@ -19,8 +17,6 @@ export type Marker = {
   lat: number;
   lng: number;
   markerType: string;
-  createdAt: Date;
-  updatedAt: Date;
 };
 
 /**

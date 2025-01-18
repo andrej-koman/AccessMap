@@ -25,14 +25,13 @@ import {
 export default function MapComponent({ apiKey }: { apiKey: string }) {
   // Use states
   const [markers, setMarkers] = useState<Marker[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const handleRightClick = (e: MapMouseEvent) => {
     console.log("Right click", e);
-    // find the button open-marker-dialog and click it
-    const button = document.querySelector(".open-marker-dialog");
-    if (button) {
-      (button as HTMLButtonElement).click();
-    }
 
     // Extract the lat and lng from the even
     const latLng = e.detail.latLng;
@@ -43,80 +42,23 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
     const lat = latLng.lat;
     const lng = latLng.lng;
 
-    // Create a new marker object
-    const newMarker: Marker = {
-      lat: lat,
-      lng: lng,
-      name: "New Marker",
-      markerType: "lowNoiseZone",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    // Set the selected location
+    setSelectedLocation({ lat, lng });
 
-    // Set the marker state
-    setMarkers([...markers, newMarker]);
-  };
-
-  const renderMarkerImage = (markerType: string) => {
-    switch (markerType) {
-      case "ramp":
-        return (
-          <div className="rounded-full border-2 border-red-500 bg-white p-1">
-            <TriangleRightIcon color="red" />
-          </div>
-        );
-      case "accessibleEntrance":
-        return (
-          <div className="rounded-full border-2 border-blue-500 bg-white p-1">
-            <DoorOpenIcon color="blue" />
-          </div>
-        );
-      case "elevator":
-        return (
-          <div className="rounded-full border-2 border-green-500 bg-white p-1">
-            <ArrowUpDownIcon color="green" />
-          </div>
-        );
-      case "audioSignal":
-        return (
-          <div className="rounded-full border-2 border-purple-900 bg-white p-1">
-            <EarIcon color="purple" />
-          </div>
-        );
-      case "visualSignal":
-        return (
-          <div className="rounded-full border-2 border-yellow-500 bg-white p-1">
-            <EyeIcon color="#BA8E23" />
-          </div>
-        );
-      case "bench":
-        return (
-          <div className="rounded-full border-2 border-black bg-white p-1">
-            <RockingChairIcon color="black" />
-          </div>
-        );
-      case "handRail":
-        return (
-          <div className="rounded-full border-2 border-gray-500 bg-white p-1">
-            <FenceIcon color="gray" />
-          </div>
-        );
-      case "lowNoiseZone":
-        return (
-          <div
-            className="rounded-full border-2 bg-white p-1"
-            style={{ borderColor: "brown" }}
-          >
-            <EarOffIcon color="brown" />
-          </div>
-        );
-      default:
-        return "missing";
+    // find the button open-marker-dialog and click it
+    const button = document.querySelector(".open-marker-dialog");
+    if (button) {
+      (button as HTMLButtonElement).click();
     }
   };
+
+  const addMarker = (marker: Marker) => {
+    setMarkers([...markers, marker]);
+  };
+
   return (
     <>
-      <MarkerDialog />
+      <MarkerDialog selectedLocation={selectedLocation} addMarker={addMarker} />
       <MarkerDetailsDialog />
       <APIProvider apiKey={apiKey}>
         <Map
@@ -153,3 +95,62 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
     </>
   );
 }
+
+/** HELPERS */
+const renderMarkerImage = (markerType: string) => {
+  switch (markerType) {
+    case "ramp":
+      return (
+        <div className="rounded-full border-2 border-red-500 bg-white p-1">
+          <TriangleRightIcon color="red" />
+        </div>
+      );
+    case "accessibleEntrance":
+      return (
+        <div className="rounded-full border-2 border-blue-500 bg-white p-1">
+          <DoorOpenIcon color="blue" />
+        </div>
+      );
+    case "elevator":
+      return (
+        <div className="rounded-full border-2 border-green-500 bg-white p-1">
+          <ArrowUpDownIcon color="green" />
+        </div>
+      );
+    case "audioSignal":
+      return (
+        <div className="rounded-full border-2 border-purple-900 bg-white p-1">
+          <EarIcon color="purple" />
+        </div>
+      );
+    case "visualSignal":
+      return (
+        <div className="rounded-full border-2 border-yellow-500 bg-white p-1">
+          <EyeIcon color="#BA8E23" />
+        </div>
+      );
+    case "bench":
+      return (
+        <div className="rounded-full border-2 border-black bg-white p-1">
+          <RockingChairIcon color="black" />
+        </div>
+      );
+    case "handRail":
+      return (
+        <div className="rounded-full border-2 border-gray-500 bg-white p-1">
+          <FenceIcon color="gray" />
+        </div>
+      );
+    case "lowNoiseZone":
+      return (
+        <div
+          className="rounded-full border-2 bg-white p-1"
+          style={{ borderColor: "brown" }}
+        >
+          <EarOffIcon color="brown" />
+        </div>
+      );
+    default:
+      return "missing";
+  }
+};
