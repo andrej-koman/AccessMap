@@ -11,7 +11,7 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
         disableDefaultUI={true}
         colorScheme="dark"
         reuseMaps={true}
-        mapTypeId={"roadmap"}
+        mapTypeId={"hybrid"}
         styles={
           [
             {
