@@ -1,11 +1,16 @@
 "use client";
-import { APIProvider, Map, type MapMouseEvent } from "@vis.gl/react-google-maps";
+import {
+  APIProvider,
+  Map,
+  type MapMouseEvent,
+  AdvancedMarker,
+  Pin,
+} from "@vis.gl/react-google-maps";
 import { useState } from "react";
-import { type Marker}
+import { type Marker } from "~/types/schema";
 
 export default function MapComponent({ apiKey }: { apiKey: string }) {
-
-  const [marker, setMarkers] = useState([]);
+  const [marker, setMarkers] = useState<Marker>();
 
   const handleRightClick = (e: MapMouseEvent) => {
     console.log("Right click", e);
@@ -18,6 +23,21 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
 
     const lat = latLng.lat;
     const lng = latLng.lng;
+
+    // Create a new marker object
+    const newMarker: Marker = {
+      id: 1,
+      lat: lat,
+      lng: lng,
+      name: "New Marker",
+      disabilityId: 1,
+      markerType: "default",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Set the marker state
+    setMarkers(newMarker);
   };
 
   return (
@@ -29,17 +49,31 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
         disableDefaultUI={true}
         colorScheme="dark"
         reuseMaps={true}
-        mapTypeId={"hybrid"}
         onContextmenu={handleRightClick}
-        styles={
-          [
-            {
-              featureType: "poi.business",
-              stylers: [{ visibility: "off" }]
-            }
-          ]
-        }
-      />
+        mapId={"1d3a5ab35e55c11"}
+        styles={[
+          {
+            featureType: "poi.business",
+            stylers: [{ visibility: "off" }],
+          },
+        ]}
+      >
+        {marker && (
+          <AdvancedMarker
+            key={marker.id}
+            position={{
+              lat: marker.lat,
+              lng: marker.lng,
+            }}
+          >
+            <Pin
+              background={"#0f9d58"}
+              borderColor={"#006425"}
+              glyphColor={"#60d98f"}
+            />
+          </AdvancedMarker>
+        )}
+      </Map>
     </APIProvider>
   );
 }
