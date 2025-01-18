@@ -5,7 +5,7 @@ import { type Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "AccessMap",
-  description: "AccessMap is an intuitive navigation app designed to empower individuals with disabilities to explore their surroundings confidently.",
+  description: "AccessMap is an intuitive navigation app designed to empower individuals with disabilities to explore their surroundings confidently. ",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
