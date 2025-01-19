@@ -8,7 +8,7 @@ import {
   AdvancedMarkerAnchorPoint,
 } from "@vis.gl/react-google-maps";
 import MarkerDialog from "./marker-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type Marker } from "~/types/schema";
 import MarkerDetailsDialog from "./marker-details-dialog";
 import {
@@ -55,6 +55,25 @@ export default function MapComponent({ apiKey }: { apiKey: string }) {
   const addMarker = (marker: Marker) => {
     setMarkers([...markers, marker]);
   };
+
+  useEffect(() => {
+    // Fetch all the markers
+    const fetchMarkers = async () => {
+      try {
+        const response = await fetch("/api/markers"); // Adjust the API path if needed
+        if (!response.ok) {
+          throw new Error("Failed to fetch markers");
+        }
+
+        const data: Marker[] = await response.json();
+        setMarkers(data);
+      } catch (error) {
+        console.error("Error fetching markers:", error);
+      }
+    };
+
+    fetchMarkers();
+  }, [])
 
   return (
     <>

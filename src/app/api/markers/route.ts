@@ -24,3 +24,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: e }, { status: 500 });
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+
+    // Get all markerTypes from query params
+    const markerTypes = searchParams.getAll("markerType");
+
+    // Query the database
+    const query = db.select().from(marker);
+
+    const markers = await query.execute();
+    const sanitizedMarkers = markers.map((m) => ({
+      ...m,
+      lat: parseFloat(m.lat!),
+      lng: parseFloat(m.lng!)
+    }))
+
+    return NextResponse.json(sanitizedMarkers, { status: 200 });
+  }
+  catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: e }, { status: 500 });
+  }
+}
