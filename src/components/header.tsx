@@ -12,7 +12,7 @@ import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { TooltipProvider, Tooltip } from "./ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 
-export default function Header(filters: string[]) {
+export default function Header() {
   return (
     <header
       className="fixed left-0 top-0 h-max w-full p-2"
@@ -31,11 +31,7 @@ export default function Header(filters: string[]) {
           {/* Right side */}
           <ToggleGroup type="multiple" variant="outline">
             <ToggleGroupItem value="elevator" aria-label="Toggle elevator">
-              <Tooltip>
-                <TooltipTrigger>
-                  <ArrowUpDownIcon color="green" />
-                </TooltipTrigger>
-              </Tooltip>
+              <ArrowUpDownIcon color="green" />
             </ToggleGroupItem>
             <ToggleGroupItem value="ramp" aria-label="Toggle ramp">
               <TriangleRightIcon color="red" />
